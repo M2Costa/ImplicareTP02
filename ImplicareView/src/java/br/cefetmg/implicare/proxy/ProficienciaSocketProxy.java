@@ -8,8 +8,14 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.Proficiencia;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.ProficienciaManagement;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +27,13 @@ public class ProficienciaSocketProxy implements ProficienciaManagement {
     Cliente Cliente;
     
     public ProficienciaSocketProxy() {
-        this.Cliente = Cliente.getInstancia();
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override

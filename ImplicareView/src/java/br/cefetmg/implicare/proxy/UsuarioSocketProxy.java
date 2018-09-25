@@ -9,7 +9,12 @@ import br.cefetmg.implicare.model.domain.Usuario;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.UsuarioManagement;
+import com.google.gson.Gson;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +26,13 @@ public class UsuarioSocketProxy implements UsuarioManagement{
     Cliente Cliente;
     
     public UsuarioSocketProxy() {
-        this.Cliente = Cliente.getInstancia();
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(UsuarioSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(UsuarioSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override

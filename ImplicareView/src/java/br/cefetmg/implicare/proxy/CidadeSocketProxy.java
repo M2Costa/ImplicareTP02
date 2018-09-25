@@ -8,8 +8,14 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.Cidade;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CidadeManagement;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,7 +23,19 @@ import java.util.List;
  */
 
 public class CidadeSocketProxy implements CidadeManagement {
-
+    
+    Cliente Cliente;
+    
+    public CidadeSocketProxy() {
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(CidadeSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(CidadeSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public List<Cidade> getCidades(int Cod_Estado) throws PersistenceException {
         Pacote pacoteEnviado;

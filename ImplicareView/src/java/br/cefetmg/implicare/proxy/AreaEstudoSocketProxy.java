@@ -8,8 +8,14 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.AreaEstudo;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.AreaEstudoManagement;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +27,13 @@ public class AreaEstudoSocketProxy implements AreaEstudoManagement {
     Cliente Cliente;
     
     public AreaEstudoSocketProxy(){
-        this.Cliente = Cliente.getInstancia();
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(AreaEstudoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AreaEstudoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
@@ -36,7 +48,7 @@ public class AreaEstudoSocketProxy implements AreaEstudoManagement {
         pacoteRecebido = Cliente.requisicao(pacoteEnviado);
         
         List<AreaEstudo> AreaEst = gson.fromJson(pacoteRecebido.getDados().get(0),
-                new TypeToken<List<AreaEst>>() {
+                new TypeToken<List<AreaEstudo>>() {
                 }.getType());
         
         return AreaEst;

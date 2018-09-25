@@ -9,7 +9,12 @@ import br.cefetmg.implicare.model.domain.PessoaFisica;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.PessoaFisicaManagement;
+import com.google.gson.Gson;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +26,13 @@ public class PessoaFisicaSocketProxy implements PessoaFisicaManagement {
     Cliente Cliente;
     
     public PessoaFisicaSocketProxy() {
-        this.Cliente = Cliente.getInstancia();
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(PessoaFisicaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(PessoaFisicaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override

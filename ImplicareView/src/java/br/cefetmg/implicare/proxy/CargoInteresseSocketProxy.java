@@ -9,8 +9,14 @@ import br.cefetmg.implicare.model.domain.CargoInteresse;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CargoInteresseManagement;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,7 +28,13 @@ public class CargoInteresseSocketProxy implements CargoInteresseManagement {
     Cliente Cliente;
     
     public CargoInteresseSocketProxy() {
-        this.Cliente = Cliente.getInstancia();        
+        try {        
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override

@@ -8,8 +8,14 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.Estado;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.EstadoManagement;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,7 +23,19 @@ import java.util.List;
  */
 
 public class EstadoSocketProxy implements EstadoManagement {
-
+    
+    Cliente Cliente;
+    
+    public EstadoSocketProxy() {
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(EstadoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(EstadoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public List<Estado> listAll() throws PersistenceException {
         Pacote pacoteEnviado;
