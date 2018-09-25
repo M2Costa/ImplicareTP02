@@ -16,6 +16,7 @@ import java.util.Set;
  *
  * @author Gabriel
  */
+
 public class CargoSocketProxy implements CargoManagement {
     
     Cliente Cliente;

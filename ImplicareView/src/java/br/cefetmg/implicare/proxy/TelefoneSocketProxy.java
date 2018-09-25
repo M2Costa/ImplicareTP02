@@ -9,37 +9,108 @@ import br.cefetmg.implicare.model.domain.Telefone;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.TelefoneManagement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Gabriel
  */
-public class TelefoneSocketProxy implements TelefoneManagement {
 
+public class TelefoneSocketProxy implements TelefoneManagement {
+    
+    Cliente Cliente;
+    
+    public TelefoneSocketProxy() {
+        this.Cliente = Cliente.getInstancia();
+    }
+    
     @Override
     public void insert(Telefone Telefone) throws BusinessException, PersistenceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Pacote pacoteEnviado;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(Telefone));
+        pacoteEnviado = new Pacote(TipoOperacao.INS_Telefone, dados);
+
+        Cliente.requisicao(pacoteEnviado);
     }
 
     @Override
     public boolean update(long CPF_CNPJ, String Num_Telefone, Telefone Telefone) throws BusinessException, PersistenceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Pacote pacoteEnviado;
+        boolean pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CPF_CNPJ));
+        dados.add(gson.toJson(Num_Telefone));
+        dados.add(gson.toJson(Telefone));
+        pacoteEnviado = new Pacote(TipoOperacao.UPD_Telefone, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        return pacoteRecebido;
     }
 
     @Override
     public boolean delete(long CPF_CNPJ, String Num_Telefone) throws PersistenceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Pacote pacoteEnviado;
+        boolean pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CPF_CNPJ));
+        dados.add(gson.toJson(Num_Telefone));
+        pacoteEnviado = new Pacote(TipoOperacao.DEL_Telefone, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        return pacoteRecebido;
     }
 
     @Override
     public List<Telefone> getTelefones(long CPF_CNPJ) throws PersistenceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
+        
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CPF_CNPJ));
+        pacoteEnviado = new Pacote(TipoOperacao.LIST_Telefones, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        
+        List<Telefone> Tel = gson.fromJson(pacoteRecebido.getDados().get(0),
+                new TypeToken<List<Telefone>>() {
+                }.getType());
+        
+        return Tel;
     }
 
     @Override
     public Telefone getTelefoneCod(long CPF_CNPJ, String Num_Telefone) throws PersistenceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+        
+        dados.add(gson.toJson(CPF_CNPJ));
+        dados.add(gson.toJson(Num_Telefone));
+        pacoteEnviado = new Pacote(TipoOperacao.PESQ_Telefone, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        Telefone Tel = gson.fromJson(pacoteRecebido.getDados().get(0), Telefone.class);
+        return Tel;
     }
     
 }

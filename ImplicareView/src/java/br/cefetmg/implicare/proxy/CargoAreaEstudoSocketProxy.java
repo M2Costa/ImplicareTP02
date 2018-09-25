@@ -18,6 +18,7 @@ import java.util.Set;
  *
  * @author Gabriel
  */
+
 public class CargoAreaEstudoSocketProxy implements CargoAreaEstudoManagement {
     
      Cliente Cliente;

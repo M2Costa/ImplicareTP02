@@ -9,12 +9,14 @@ import br.cefetmg.implicare.model.domain.CompetenciaPessoaFisica;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CompetenciaPessoaFisicaManagement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Gabriel
  */
+
 public class CompetenciaPessoaFisicaSocketProxy implements CompetenciaPessoaFisicaManagement {
     
     Cliente Cliente;

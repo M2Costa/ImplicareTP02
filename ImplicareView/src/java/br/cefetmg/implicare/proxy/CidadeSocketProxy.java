@@ -8,12 +8,14 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.Cidade;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CidadeManagement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Gabriel
  */
+
 public class CidadeSocketProxy implements CidadeManagement {
 
     @Override

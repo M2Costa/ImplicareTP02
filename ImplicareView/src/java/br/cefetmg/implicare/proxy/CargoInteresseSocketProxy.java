@@ -9,19 +9,14 @@ import br.cefetmg.implicare.model.domain.CargoInteresse;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CargoInteresseManagement;
-import br.cefetmg.inf.implicare.util.AbstractInOut;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Gabriel
  */
+
 public class CargoInteresseSocketProxy implements CargoInteresseManagement {
     
     Cliente Cliente;
