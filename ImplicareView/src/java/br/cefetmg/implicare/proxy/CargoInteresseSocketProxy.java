@@ -20,136 +20,84 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Morato
+ * @author Gabriel
  */
 public class CargoInteresseSocketProxy implements CargoInteresseManagement {
     
-    private String serverAddress;
-    private int serverPort;
+    Cliente Cliente;
     
-    public CargoInteresseSocketProxy(String serverAddress, int serverPort) {
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;        
-    }
-       
     public CargoInteresseSocketProxy() {
-        this("localhost", 2223);
+        this.Cliente = Cliente.getInstancia();        
     }
     
     @Override
     public void insert(CargoInteresse CargoInteresse) throws BusinessException, PersistenceException {
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
-        
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("insert(CargoInteresse)");
-            writer.writeObject(CargoInteresse);           
-            writer.flush();
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
+        Pacote pacoteEnviado;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CargoInteresse));
+        pacoteEnviado = new Pacote(TipoOperacao.INS_CargoInteresse, dados);
+
+        Cliente.requisicao(pacoteEnviado);
     }
 
     @Override
     public boolean delete(long CPF, int Cod_Cargo) throws PersistenceException {
-        Boolean result;
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
-        
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("delete(CPF, Cod_Cargo)");
-            writer.writeLong(CPF); 
-            writer.writeInt(Cod_Cargo);
-            writer.flush();
-            
-            result = reader.readBoolean();
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
-        return result;
+        Pacote pacoteEnviado;
+        boolean pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CPF));
+        dados.add(gson.toJson(Cod_Cargo));
+        pacoteEnviado = new Pacote(TipoOperacao.DEL_CargoInteresse, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        return pacoteRecebido;
     }
 
     @Override
     public List<CargoInteresse> getCargosInteresse(long CPF) throws PersistenceException {
-        List<CargoInteresse> result;
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
         
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("getCargosInteresse(CPF)");
-            writer.writeLong(CPF);          
-            writer.flush();
-            
-            result = null;
-            
-            try {
-                result = (List<CargoInteresse>)reader.readObject();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(CPF));
+        pacoteEnviado = new Pacote(TipoOperacao.LIST_CargoInteresse, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
         
-        return result;
+        List<CargoInteresse> CarInteresse = gson.fromJson(pacoteRecebido.getDados().get(0),
+                new TypeToken<List<CargoInteresse>>() {
+                }.getType());
+        
+        return CarInteresse;
     }
 
     @Override
     public CargoInteresse getCargoInteresseCod(long CPF, int Cod_Cargo) throws PersistenceException {
-        CargoInteresse result;
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
         
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("getCargoInteresseCod(CPF, Cod_Cargo)");
-            writer.writeLong(CPF);
-            writer.writeInt(Cod_Cargo);          
-            writer.flush();
-            
-            result = null;
-            
-            try {
-                result = (CargoInteresse) reader.readObject();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CargoInteresseSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
-        
-        return result;
+        dados.add(gson.toJson(CPF));
+        dados.add(gson.toJson(Cod_Cargo));
+        pacoteEnviado = new Pacote(TipoOperacao.PESQ_CargoInteresse, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        CargoInteresse CarInteresse = gson.fromJson(pacoteRecebido.getDados().get(0), CargoInteresse.class);
+        return CarInteresse;
     }
     
 }

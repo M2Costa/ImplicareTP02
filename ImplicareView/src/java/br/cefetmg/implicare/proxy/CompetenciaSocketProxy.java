@@ -15,7 +15,13 @@ import java.util.List;
  * @author Gabriel
  */
 public class CompetenciaSocketProxy implements CompetenciaManagement {
-
+    
+    Cliente Cliente;
+    
+    public CompetenciaSocketProxy() {
+        this.Cliente = Cliente.getInstancia();
+    }
+    
     @Override
     public List<Competencia> listAll() throws PersistenceException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -6,66 +6,44 @@
 package br.cefetmg.implicare.proxy;
 
 import br.cefetmg.implicare.model.domain.FormacaoAcademica;
+import br.cefetmg.implicare.model.domain.CargoAreaEstudo;
 import br.cefetmg.implicare.model.exception.BusinessException;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.CargoAreaEstudoManagement;
-import br.cefetmg.inf.implicare.util.AbstractInOut;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Morato
+ * @author Gabriel
  */
 public class CargoAreaEstudoSocketProxy implements CargoAreaEstudoManagement {
     
-    private String serverAddress;
-    private int serverPort;
-    
-    public CargoAreaEstudoSocketProxy(String serverAddress, int serverPort) {
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;        
-    }
+     Cliente Cliente;
        
     public CargoAreaEstudoSocketProxy() {
-        this("localhost", 2223);
+         this.Cliente = Cliente.getInstancia();
     }
     @Override
-    public Set<br.cefetmg.implicare.model.domain.CargoAreaEstudo> CargoAreaEstudo(List<FormacaoAcademica> FormAcad) throws BusinessException, PersistenceException {
-        Set<br.cefetmg.implicare.model.domain.CargoAreaEstudo> result;
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
+    public Set<CargoAreaEstudo> CargoAreaEstudo(List<FormacaoAcademica> FormAcad) throws BusinessException, PersistenceException {
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
         
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("CargoAreaEstudo(FormAcad)");
-            writer.writeObject(FormAcad);
-            
-            result = null;
-            
-            try {
-                result = (Set<br.cefetmg.implicare.model.domain.CargoAreaEstudo>)reader.readObject();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(CargoAreaEstudoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(CargoAreaEstudoSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(FormAcad));
+        pacoteEnviado = new Pacote(TipoOperacao.LIST_CargoAreaEstudo, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
         
-        return result;
+        Set<CargoAreaEstudo> CarAreaEst = gson.fromJson(pacoteRecebido.getDados().get(0),
+                new TypeToken<Set<CargoAreaEstudo>>() {
+                }.getType());
+        
+        return CarAreaEst;
     }
     
 }
