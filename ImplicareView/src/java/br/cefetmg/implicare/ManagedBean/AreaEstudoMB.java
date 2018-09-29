@@ -18,14 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class AreaEstudoMB {
     
-    String JSP;
+    private String JSF;
     
     public String listAll(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String getAreaEstudoCod(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
 }

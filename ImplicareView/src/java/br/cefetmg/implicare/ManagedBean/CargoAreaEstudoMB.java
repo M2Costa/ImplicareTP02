@@ -5,12 +5,23 @@
  */
 package br.cefetmg.implicare.ManagedBean;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  *
- * @author Aluno
+ * @author Gabriel
  */
-public class CargoAreaEstudoMB {
 
-    public Set<CargoAreaEstudo> CargoAreaEstudo(List<FormacaoAcademica> FormAcad) throws BusinessException, PersistenceException;
+@ManagedBean(name = "CargoAreaEstudo")
+@RequestScoped
+public class CargoAreaEstudoMB {
+    
+    private String JSF;
+    
+    public String CargoAreaEstudo(HttpServletRequest request){
+        return JSF;
+    }
     
 }

@@ -18,18 +18,18 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class CandidatoVagaDialogoMB {
     
-    String JSP;
+    private String JSF;
     
     public String insert(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String getCandidatoVagaDialogo(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String getCandidatoVagaDialogoCod(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
 

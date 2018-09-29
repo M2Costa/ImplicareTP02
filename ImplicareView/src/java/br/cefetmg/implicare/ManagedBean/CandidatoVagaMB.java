@@ -18,22 +18,22 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class CandidatoVagaMB {
     
-    String JSP;
+    private String JSF;
     
     public String insert(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String update(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String getCandidatosVaga(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
     public String getCandidatoVagaCod(HttpServletRequest request){
-        return JSP;
+        return JSF;
     }
     
 }
