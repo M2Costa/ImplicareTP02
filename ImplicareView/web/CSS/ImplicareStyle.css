@@ -1,0 +1,44 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30/09/2018, 09:08:27
+    Author     : Morato
+*/
+
+#Header {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    border-bottom: 1px;
+}
+
+#footer {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+#b1, #b2 {
+    border: 0;
+    background-color: white;
+    align-self: baseline;
+}
+
+div, panelgrid{
+    height: 100%;
+}
+
+#mensagens, #perfil {
+    background-color: pink;
+}
+
+#bt {
+    border: 0;
+    background-color: green;
+    opacity: 50%;
+}
