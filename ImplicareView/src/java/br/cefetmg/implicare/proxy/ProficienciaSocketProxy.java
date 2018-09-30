@@ -8,11 +8,10 @@ package br.cefetmg.implicare.proxy;
 import br.cefetmg.implicare.model.domain.Proficiencia;
 import br.cefetmg.implicare.model.exception.PersistenceException;
 import br.cefetmg.implicare.model.service.ProficienciaManagement;
-import br.cefetmg.inf.implicare.util.AbstractInOut;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,72 +21,54 @@ import java.util.logging.Logger;
  *
  * @author Gabriel
  */
+
 public class ProficienciaSocketProxy implements ProficienciaManagement {
     
-    private String serverAddress;
-    private int serverPort;
+    Cliente Cliente;
     
-    ProficienciaSocketProxy(String serverAddress, int serverPort){
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;   
-    }
-    
-    ProficienciaSocketProxy(){
-        this("localhost", 2223);
+    public ProficienciaSocketProxy() {
+        try {
+            this.Cliente = Cliente.getInstancia();
+        } catch (SocketException ex) {
+            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
     public List<Proficiencia> listAll() throws PersistenceException {
-        List<Proficiencia> List;
-        List = new ArrayList();
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("listAll()");         
-            writer.flush();
-            
-    
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        pacoteEnviado = new Pacote(TipoOperacao.LIST_Proficiencia, null);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
         
-        return List;
+        List<Proficiencia> Prof = gson.fromJson(pacoteRecebido.getDados().get(0),
+                new TypeToken<List<Proficiencia>>() {
+                }.getType());
+        
+        return Prof;
     }
 
     @Override
     public Proficiencia getProficienciaCod(int Cod_Proficiencia) throws PersistenceException {
-        Proficiencia Proficiencia; 
-        Proficiencia = new Proficiencia();
-        Socket socket;
-        ObjectOutputStream writer;
-        ObjectInputStream reader;
-        
-        try {
-            socket = new Socket(this.serverAddress, this.serverPort);            
-            writer = AbstractInOut.getObjectWriter(socket);
-            reader = AbstractInOut.getObjectReader(socket);                 
-            
-            writer.writeUTF("GetProficienciaCod(Cod_Proficiencia)");
-            writer.writeInt(Cod_Proficiencia);         
-            writer.flush();
-            
-    
-            
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ProficienciaSocketProxy.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex.getMessage());
-        }
-        
-        return Proficiencia;
+        Pacote pacoteEnviado;
+        Pacote pacoteRecebido;
+
+        Gson gson = new Gson();
+
+        ArrayList<String> dados = new ArrayList<>();
+
+        dados.add(gson.toJson(Cod_Proficiencia));
+        pacoteEnviado = new Pacote(TipoOperacao.PESQ_Proficiencia, dados);
+
+        pacoteRecebido = Cliente.requisicao(pacoteEnviado);
+        Proficiencia Prof = gson.fromJson(pacoteRecebido.getDados().get(0), Proficiencia.class);
+        return Prof;
     }
     
 }
